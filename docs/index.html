@@ -1,0 +1,90 @@
+<h3>Basic Usage</h3>
+<pre><code>// get app object using the module system
+var app = require(&#39;appjs&#39;);
+
+// server files from the content directory relative to this .js file
+app.serveFilesFrom(__dirname + &#39;/content&#39;);
+
+// app is the window factory. windows begin loading immediately
+var window = app.createWindow();
+
+// when ready is emitted the window has morphed into browser global window
+window.on(&#39;ready&#39;, function(){
+  window.show();
+});</code></pre>
+<h2>App</h2>
+<p><strong>App</strong> is the entry point to AppJS. It is the access point for appjs generated interfaces, application lifecycle, events, and in-process serving of files and routes to the browser.</p>
+<ul>
+<li><strong>app.serveFilesFrom(path)</strong>: Set path to serve static files from when the browser requests from <strong><a href="http://appjs/*">http://appjs/*</a></strong></li>
+<li><strong>app.createWindow(options)</strong>: Creates a new hidden browser window with the given options and returns it.  This window will begin loading immediately if it has a url to go to.</li>
+</ul>
+<h4>Window Creation Options</h4>
+<p>Most of these options are adjustable after window creation. They are all optional with the defaults shown below.</p>
+<ul>
+<li><strong>width</strong>           = 640</li>
+<li><strong>height</strong>          = 460</li>
+<li><strong>left</strong>            = centered</li>
+<li><strong>top</strong>             = centered</li>
+<li><strong>name</strong>            = auto-generated, it&#39;s only used to identify the window on <code>app.windows</code></li>
+<li><strong>url</strong>             = &#39;<a href="http://appjs">http://appjs</a>&#39; - serve static file root and routers</li>
+<li><strong>autoResize</strong>      = false - resizes in response to html content</li>
+<li><strong>showChrome</strong>      = true - show border and title bar</li>
+<li><strong>resizable</strong>       = false - control if users can resize window</li>
+<li><strong>disableSecurity</strong> = true - allow cross origin requests</li>
+<li><strong>opacity</strong>         = 1 - flat percent opacity for window</li>
+<li><strong>alpha</strong>           = false - per-pixel alpha blended (Win &amp; Mac)</li>
+<li><strong>fullscreen</strong>      = false - client area covers whole screen</li>
+<li><strong>icons</strong>           = {} - window icon in tray/taskbar/titlebar</li>
+</ul>
+<h2>Window</h2>
+<p>Window objects are created and returned by app.createWindow. A window object will itself be the global object of the browser contect once the page has loaded. If the page loads a new url the same window object will morph to the uninitialized state and then become the new browser global when it is ready.</p>
+<h4>Window Events</h4>
+<ul>
+<li><strong>window.on(&#39;create&#39;)</strong> - window has been created and is ready for the first time</li>
+<li><strong>window.on(&#39;ready&#39;)</strong> - window context is ready to use, including browser global</li>
+<li><strong>window.on(&#39;close&#39;)</strong> - window has been closed entirely and has ceased to exist</li>
+<li><strong>window.on(&#39;minimize&#39;)</strong> - window was just minimized</li>
+<li><strong>window.on(&#39;maximize&#39;)</strong> - window was just maximized</li>
+<li><strong>window.on(&#39;fullscreen&#39;)</strong> - window was just fullscreened</li>
+<li><strong>window.on(&#39;restore&#39;)</strong> - window was just restored</li>
+<li><strong>window.on(&#39;move&#39;)</strong> - window was just moveed</li>
+<li><strong>window.on(&#39;resize&#39;)</strong> - window was just resized</li>
+</ul>
+<h2>Frame</h2>
+<p>Most of the controls to control the browser container are found on <code>window.frame</code>. window.frame is always available, whether the browser&#39;s global context is current initialized or not.</p>
+<h4>Frame Properties</h4>
+<ul>
+<li><strong>window.frame.left</strong> - integer</li>
+<li><strong>window.frame.top</strong> - integer</li>
+<li><strong>window.frame.width</strong> - integer</li>
+<li><strong>window.frame.height</strong> - integer</li>
+<li><strong>window.frame.opacity</strong> - float between 0 and 1</li>
+<li><strong>window.frame.title</strong> - string</li>
+<li><strong>window.frame.state</strong> - one of [&#39;normal&#39;, &#39;maximized&#39;, &#39;minimized&#39;, &#39;fullscreen&#39;]</li>
+<li><strong>window.frame.resizable</strong> - boolean</li>
+<li><strong>window.frame.autoResize</strong> - boolean</li>
+<li><strong>window.frame.showChrome</strong> - boolean</li>
+<li><strong>window.frame.alpha</strong> - boolean</li>
+<li><strong>window.frame.topmost</strong> - boolean</li>
+</ul>
+<h4>Frame Methods</h4>
+<ul>
+<li><strong>window.frame.fullscreen()</strong></li>
+<li><strong>window.frame.minimize()</strong></li>
+<li><strong>window.frame.maximize()</strong></li>
+<li><strong>window.frame.restore()</strong></li>
+<li><strong>window.frame.center()</strong></li>
+<li><strong>window.frame.show()</strong></li>
+<li><strong>window.frame.hide()</strong></li>
+<li><strong>window.frame.resize(width, height)</strong></li>
+<li><strong>window.frame.move(left, top, [width], [height])</strong></li>
+<li><strong>window.frame.fade(toOpacity, milliseconds, callback)</strong></li>
+<li><strong>window.frame.drag()</strong> - (Windows only currently)</li>
+<li><strong>window.frame.openDevTools()</strong></li>
+<li><strong>window.frame.closeDevTools()</strong></li>
+</ul>
+<h2>Debugging tips</h2>
+<p>On Windows plateform, you can launch your application in a console:</p>
+<pre><code>bin\node.exe --harmony app.js</code></pre>
+<p>Do not forget you can open Chrome Console using a line of javascript :</p>
+<pre><code>window.frame.openDevTools()</code></pre>

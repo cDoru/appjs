@@ -1,0 +1,70 @@
+<h1>AppJS</h1>
+<p>AppJS is an SDK to develop desktop applications using Node.js melded with Chromium. With AppJS you can develop desktop tools and applications using the same libraries and knowledge used to build websites. You get all the following in one package:</p>
+<ul>
+<li>JS, HTML5, CSS, SVG, WebGL provided by Chromium</li>
+<li>mature http/https servers and client APIs - Node</li>
+<li>filesystem, dns, cryptography, subprocesses, OS APIs - Node</li>
+<li>sandboxed code execution environements virtual machines - Node</li>
+<li>tools for exposing native C++ bindings to JavaScript- Node</li>
+</ul>
+<hr>
+<ul>
+<li><strong>Site: <a href="http://appjs.com">appjs.com</a></strong></li>
+<li><strong><a href="https://plus.google.com/u/0/112803615725562877790/posts">Google+</a></strong></li>
+<li><strong>Mailing List: <a href="https://groups.google.com/forum/#!forum/appjs-dev">mailing list</a></strong></li>
+<li><strong>IRC: #appjs at irc.freenode.net</strong></li>
+</ul>
+<h2>30 Second Quickstart</h2>
+<p>The below packages include everything needed to get started with AppJS, including Node.js, all dependencies, binaries, and a launcher ready to go out of the box. 1.) Extract to a folder. 2.) Double click on launch. 3.) Hello World.</p>
+<p><strong>AppJS 0.0.20 Distributables:</strong></p>
+<ul>
+<li>Linux <a href="http://dl.bintray.com/sihorton/appjs/appjs-0.0.20-linux-ia32.tar.gz">32 bit</a> / <a href="http://dl.bintray.com/sihorton/appjs/appjs-0.0.20-linux-x64.tar.gz">64 bit</a> -&gt; app.sh</li>
+<li><a href="http://dl.bintray.com/sihorton/appjs/appjs-0.0.20-darwin-ia32.zip">Mac</a> -&gt; app.sh</li>
+<li><a href="http://dl.bintray.com/sihorton/appjs/appjs-0.0.20-win32-ia32.zip">Windows</a> -&gt; app.exe</li>
+</ul>
+<p><strong>npm install</strong>
+<em>OS X install is currently broken</em></p>
+<p>AppJS can be now be installed via npm.</p>
+<pre><code>npm install appjs</code></pre>
+<p><strong>AppJS requires 32bit Node on OS X</strong>. It works on 64bit OS X but <strong>Node must be 32bit</strong>. We&#39;re working on solving this, but it&#39;s a limitation of Chrome itself so it&#39;s a work in progress.
+Help us gain traction by <a href="http://code.google.com/p/chromium/issues/detail?id=18323">starring this chromium issue</a>.</p>
+<p>(Windows requires <a href="http://www.microsoft.com/en-us/download/details.aspx?id=5555">MSVC++ 2010 runtimes</a>)</p>
+<h2>One Minute Usage Overview</h2>
+<pre><code class="language-javascript">var app = module.exports = require(&#39;appjs&#39;);
+
+app.serveFilesFrom(__dirname + &#39;/content&#39;);
+
+var window = app.createWindow({
+  width  : 640,
+  height : 460,
+  icons  : __dirname + &#39;/content/icons&#39;
+});
+
+window.on(&#39;create&#39;, function(){
+  console.log(&quot;Window Created&quot;);
+  window.frame.show();
+  window.frame.center();
+});
+
+window.on(&#39;ready&#39;, function(){
+  console.log(&quot;Window Ready&quot;);
+  window.require = require;
+  window.process = process;
+  window.module = module;
+  window.addEventListener(&#39;keydown&#39;, function(e){
+    if (e.keyIdentifier === &#39;F12&#39;) {
+      window.frame.openDevTools();
+    }
+  });
+});
+
+window.on(&#39;close&#39;, function(){
+  console.log(&quot;Window Closed&quot;);
+});</code></pre>
+<h2>Shared Contexts</h2>
+<p><img src="https://github.com/appjs/appjs/raw/master/examples/chrome-in-node-repl.jpg" alt="chrome-in-node-repl" title="Chrome in Node REPL"></p>
+<p><img src="https://github.com/appjs/appjs/raw/master/examples/shared-context.jpg" alt="DOM Event Listener in Node" title="DOM Event Listener in Node"></p>
+<h2>License</h2>
+<p>The MIT License</p>
+<p>Copyright (c) 2012 The AppJS Authors</p>
+<p>See the LICENSE file for details.</p>

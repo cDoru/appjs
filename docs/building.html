@@ -1,0 +1,160 @@
+<h1>Building</h1>
+<p>For all platforms <a href="http://nodejs.org/#download">Node.js</a> must be installed. <code>node-gyp</code> is used to automate the build process and can be installed using npm <code>npm install node-gyp -g</code> (using sudo on Linux and Mac). When you have fulfilled the pre-requisites to build on your platform, AppJS can be built by executing <code>node-gyp rebuild</code> in the AppJS source folder.</p>
+<p>The <a href="https://github.com/appjs/appjs/downloads">Chromium Embedded Frame</a> distributables are required to build. Download the ones for your platform, extract the folder to <code>&lt;appjs&gt;/deps</code> and rename the folder to &quot;cef&quot;.</p>
+<h2>Linux</h2>
+<h2>Mac</h2>
+<p><code>touch bundle-mac.sh</code> 
+<code>chmod +x bundle-mac.sh</code></p>
+<p>Then paste the following in the <code>bundle-mac.sh</code> file:</p>
+<pre><code class="language-sh">
+  #!/usr/bin/env sh
+
+  git clone git@github.com:appjs/appjs.git
+  export NVERSION=&quot;0.8.22&quot;;
+  export CEFVERSION=&quot;1.1180.724&quot;;
+  export N32BASE=`pwd`/appjs/node-32/${NVERSION}
+  export PATH=&quot;${N32BASE}/bin:${PATH}&quot;
+  export NODE_URL=&quot;http://nodejs.org/dist/v${NVERSION}/node-v${NVERSION}-darwin-x86.tar.gz&quot;
+  export NODE_TAR_FILE=&quot;node-v${NVERSION}-darwin-x86.tar.gz&quot;
+  export CEF_BINARY=&quot;cef_binary_${CEFVERSION}_darwin_ia32.tar.gz&quot;
+  export CEF_BINARY_URL=&quot;https://github.com/downloads/appjs/appjs/cef_binary_${CEFVERSION}_darwin_ia32.tar.gz&quot;
+
+  cd appjs
+  mkdir -p node-32/src
+
+  cd node-32/src
+
+  if [ -a &quot;${NODE_TAR_FILE}&quot; ]; 
+  then
+    echo &quot;\nFile ${NODE_TAR_FILE} exists.\n&quot;
+    rm -rf &quot;node-v${NVERSION}-darwin-x86&quot; # if it exists
+  else  
+    wget &quot;${NODE_URL}&quot;
+  fi
+
+  tar -zxf $NODE_TAR_FILE
+
+  cd node-v${NVERSION}-darwin-x86
+  export PATH=&quot;node-v${NVERSION}-darwin-x86/bin:${PATH}&quot;
+  echo &quot;\nCopying node binary...\n&quot;
+  cp bin/node ../../../data/mac/node-bin/
+  npm install -g node-gyp
+  # mkdir node_modules
+  npm install mime
+
+  cd ../../../
+  mkdir -p deps
+  cd deps
+
+  if [ -a &quot;cef_binary_${CEFVERSION}_darwin_ia32.tar.gz&quot; ]; 
+  then
+    echo &quot;\nFile cef_binary_${CEFVERSION}_darwin_ia32.tar.gz exists.\n&quot;
+  else  
+    wget --no-check-certificate &quot;${CEF_BINARY_URL}&quot;
+  fi
+
+  tar -xzf cef_binary_${CEFVERSION}_darwin_ia32.tar.gz
+  ln -s cef_binary_${CEFVERSION}_darwin_ia32 cef
+
+  cd ../
+  node-gyp configure
+  node-gyp build</code></pre>
+<p>Then run it:</p>
+<p><code>./bundle-mac.sh</code></p>
+<h2>Windows</h2>
+<p>Visual C++ 2010 must be available in some form. You can download <a href="http://www.microsoft.com/visualstudio/en-us/products/2010-editions/visual-cpp-express">Visual C++ 2010 Express</a> for free.</p>
+<p>While not required, <a href="http://ftp.mozilla.org/pub/mozilla.org/mozilla/libraries/win32/MozillaBuildSetup-Latest.exe">MozillaBuild</a> is the recommended build environment to compile in. It ensures you have all the dependencies and environmental variables in place. When you want to compile simply run &quot;start-msvc10.bat&quot; in the MozillaBuild folder, then <code>cd /c/path/to/appjs</code>.</p>
+<h3>Windows Alternative (detailed)</h3>
+<p>This section explains how to take a fresh windows 7 install and gives detailed instructions on how to compile appjs.</p>
+<h4>NPM / node-gyp</h4>
+<p>The first step involves creating a working npm environment that is able to compile C++ modules.
+<em> Go to <a href="http://nodejs.org/">nodejs.org</a> and click on the install button to get the latest version of node.
+</em> Click on the &quot;Node.js Command Prompt&quot; link and then type in:</p>
+<pre><code>  npm install -g node-gyp </code></pre>
+<ul>
+<li>Install python (version 2.7.3 since version 3.* versions are not compatible).<ul>
+<li><a href="http://www.python.org/download/releases/2.7.3/">http://www.python.org/download/releases/2.7.3/</a></li>
+</ul>
+</li>
+<li>Create an environment variable PYTHON = <install directory>\python.exe</li>
+</ul>
+<h4>Free C++ Compiler setup</h4>
+<p>This section details using the free visual studio express edition since that is available for all. </p>
+<ul>
+<li><p>Download the Microsoft Visual Studio C++ 2010 Express (<a href="http://go.microsoft.com/?linkid=9709949">http://go.microsoft.com/?linkid=9709949</a>)</p>
+<ul>
+<li>This link is a web installer and it installs a lot of stuff (2.3 gig)</li>
+<li>install includes .Net Framework 4 and Microsoft SQL Server Compact</li>
+</ul>
+</li>
+<li><p>For windows 7 you will also need to download and install Microsoft Windows SDK for Windows 7</p>
+<ul>
+<li>Link is another web installer that installs a further 1.6 gig</li>
+<li><a href="http://www.microsoft.com/en-us/download/details.aspx?displayLang=en&amp;id=8279">http://www.microsoft.com/en-us/download/details.aspx?displayLang=en&amp;id=8279</a></li>
+</ul>
+</li>
+<li><p>Service Pack 1 can then be installed</p>
+<ul>
+<li><a href="http://www.microsoft.com/downloads/en/confirmation.aspx?FamilyID=75568aa6-8107-475d-948a-ef22627e57a5">http://www.microsoft.com/downloads/en/confirmation.aspx?FamilyID=75568aa6-8107-475d-948a-ef22627e57a5</a></li>
+<li>VC-Compiler-KB2519277.exe (<a href="http://www.microsoft.com/en-us/download/details.aspx?id=4422">http://www.microsoft.com/en-us/download/details.aspx?id=4422</a>)</li>
+</ul>
+</li>
+</ul>
+<p>To test for a working environment you can open the nodejs command prompt and enter the following:</p>
+<pre><code> npm install sqlite3</code></pre>
+<p>It may give some warnings but as long as it does not show any red colours then it should print something like</p>
+<pre><code>sqlite3@2.1.5 node_modules\sqlite3</code></pre>
+<h4>Building Appjs</h4>
+<ul>
+<li>git clone <a href="https://github.com/appjs/appjs">https://github.com/appjs/appjs</a><ul>
+<li>If you are new to git you can try tortoise git <a href="http://code.google.com/p/tortoisegit/wiki/SetupHowTo">http://code.google.com/p/tortoisegit/wiki/SetupHowTo</a></li>
+</ul>
+</li>
+<li>Download the cef binary from <a href="https://github.com/appjs/appjs/downloads">https://github.com/appjs/appjs/downloads</a><ul>
+<li>extract to appjs/deps/cef</li>
+<li>you can download the 32 bit and 64 bit version and swap between them when compiling for different architectures.</li>
+<li>SET npm_config_arch=ia32 to build for 32 bit</li>
+<li>SET npm_config_arch=x64 to build for 64 bit.</li>
+</ul>
+</li>
+<li><p>In the &quot;Windows SDK 7.1 Command Prompt&quot;</p>
+<ul>
+<li>cd to appjs directory</li>
+<li>install node modules:<ul>
+<li>npm install mime</li>
+</ul>
+</li>
+<li>to build for 32bit on a 64bit machine:<ul>
+<li>setenv /x86</li>
+<li>SET npm_config_arch=ia32</li>
+</ul>
+</li>
+<li><p>then in the appjs directory type</p>
+<p>  node-gyp rebuild &gt; build.log</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4>Recommendations for building in windows</h4>
+<p>Use <a href="http://nodejs.org/dist/v0.8.0/node-v0.8.0-x86.msi">node version 0.8.0</a></p>
+<p>Follow the following instructions in the <em>specified order</em> :</p>
+<p>If you already have Microsoft Visual Studio C++ 2010 or SP1 or Windows 7 SDK [this means any of them] before trying to build appjs then <strong>Uninstall</strong> the following from the control panel:</p>
+<pre><code>1. Microsoft Visual Studio 2010 Service Pack 1
+2. “Microsoft Visual C++ 2010 x86 Redistributable” and &quot;Microsoft Visual C++ 2010 x64 Redistributable&quot;
+3. Microsoft Visual Studio C++ 2010
+4. Windows SDK 7.1 and its Service Pack 1</code></pre>
+<p>Then <strong>install</strong> in the <em>specified order</em> only:</p>
+<pre><code>1. Microsoft Visual Studio C++ 2010 
+2. Windows SDK 7.1
+3. Visual Studio 2010 Service Pack 1
+4. Visual C++ 2010 SP1 Compiler Update for the Windows SDK 7.1</code></pre>
+<h5>Build Errors</h5>
+<p>If build fails with <code>Linker Errors with native_menu.obj</code></p>
+<p>Add <code>/FORCE:MULTIPLE</code> as an additional option in the Linker Properties of <em>binding.gyp</em>, like:</p>
+<pre><code>&#39;VCLinkerTool&#39;: {
+&#39;LinkTimeCodeGeneration&#39;: 1, # link-time code generation
+&#39;OptimizeReferences&#39;: 2, # /OPT:REF
+&#39;AdditionalOptions&#39;: &quot;/FORCE:MULTIPLE&quot;,   # &lt;- add this line
+&#39;EnableCOMDATFolding&#39;: 2, # /OPT:ICF
+&#39;LinkIncremental&#39;: 1, # disable incremental linking
+},      </code></pre>

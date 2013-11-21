@@ -1,0 +1,10 @@
+<h2>To Build</h2>
+<h3>Mac</h3>
+<p>These instructions work on 10.6</p>
+<p>clone the repository</p>
+<pre><code>cd appjs
+
+npm install mime</code></pre>
+<p>Download <code>node-v0.8.15-darwin-x86.tar.gz</code></p>
+<p>extract and grab the <code>bin/node</code> executable and stick it in <code>data/mac/node-bin/</code></p>
+<pre><code>node-gyp rebuild --arch i386 -j 4 # the space matters after the -j</code></pre>

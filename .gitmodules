@@ -1,3 +1,0 @@
-[submodule "data/common/npm"]
-	path = data/common/npm
-	url = git://github.com/isaacs/npm.git
